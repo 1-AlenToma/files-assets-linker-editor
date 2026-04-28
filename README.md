@@ -52,7 +52,8 @@ Create a `file-assets-linker.json` file in your project root.
     }
 ]
 ```
-
+## Preview
+![editor](https://github.com/1-AlenToma/files-assets-linker-editor/blob/main/previews/preview.png?raw=true)
 
 ## 🧠 How it works
 
