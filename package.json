@@ -1,7 +1,8 @@
 {
   "name": "files-assets-linker-editor",
   "displayName": "Assets Linker (Monaco UI)",
-  "description": "JSON-driven asset linker with Monaco editor and live preview",
+  "description": "Link external HTML, CSS, JS assets into your project",
+  "publisher": "AlenToma",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.80.0"
@@ -31,9 +32,6 @@
         }
       ]
     }
-  },
-  "devDependencies": {
-    "vite": "^8.0.10"
   },
   "dependencies": {
     "esbuild": "^0.28.0",
