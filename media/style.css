@@ -91,7 +91,7 @@ input {
 
 .btnContainer {
     display: flex;
-    justify-content:end;
+    justify-content: end;
     align-items: center;
     width: 100%;
     height: 30px;
@@ -161,8 +161,29 @@ header {
     display: grid;
     grid-template-columns: 20% auto;
     width: 100%;
-    height: 30px;
+    height: 50px;
+    align-items: center;
+}
 
+header > a {
+    font-size: 15px;
+    font-weight: bold;
+    color: var(--primary-text-color);
+    text-decoration: none;
+}
+
+header > a:hover {
+    text-decoration: underline;
+}
+
+header span {
+    display: block;
+    clear: both;
+    width: 100%;
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--primary-text-color);
+    text-align: center;
 }
 
 header>div {
@@ -171,9 +192,16 @@ header>div {
     height: 100%;
 }
 
-header>div>button {
-    float: right;
+header button {
     width: 70px
+}
+
+header>div>div {
+    float: right;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    width: 100px
 }
 
 .tabs {

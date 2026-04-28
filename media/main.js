@@ -248,6 +248,21 @@ async function getEditor(id, lang) {
             automaticLayout: true
         });
 
+        editor.updateOptions({
+            readOnly: false,
+            contextmenu: true,
+            mouseWheelZoom: true
+        });
+
+        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyC, () => {
+            document.execCommand("copy");
+        });
+
+        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyV, async () => {
+            const text = await navigator.clipboard.readText();
+            editor.trigger("keyboard", "type", { text });
+        });
+
         editor.onDidChangeModelContent((event) => {
             log("data changes", id)
             tabs[id]?.hasChange();
@@ -477,11 +492,22 @@ function getLang(path) {
     return 'plaintext';
 }
 
+function formatCode() {
+    log("formating")
+    if (currentPath) {
+        editors[currentPath.id].getAction("editor.action.formatDocument").run();
+        vscode.postMessage({
+            type: "format",
+            ...assetById(currentPath.id),
+            content: editors[currentPath.id]
+        });
+    }
+}
+
 // Ctrl+S save file
 window.addEventListener('keydown', (e) => {
     const key = e.key.toLowerCase();
     const isCmd = e.ctrlKey || e.metaKey || e.altKey;
-    log(key, isCmd, e.shiftKey, e.altKey)
 
     if (isCmd && key === 's') {
         e.preventDefault();
@@ -494,26 +520,26 @@ window.addEventListener('keydown', (e) => {
         build();
     }
 
+    if (isCmd && e.shiftKey && key === "r") {
+        e.preventDefault();
+        reload();
+    }
+
     if (isCmd && e.shiftKey && key === 'f') {
         e.preventDefault();
-        log("formating")
-        if (currentPath) {
-            vscode.postMessage({
-                type: "format",
-                ...assetById(currentPath.id),
-                content: editors[currentPath.id]
-            });
-        }
+        formatCode();
     }
 });
 
 document.addEventListener("DOMContentLoaded", () => {
 
     vscode.postMessage({ type: 'config' });
+    window.__initialized = true;
     document.getElementById("btnSave").addEventListener("click", () => saveFile());
     document.getElementById("btnSaveAll").addEventListener("click", () => saveAllFiles());
     document.getElementById("btnBuild").addEventListener("click", () => build());
     document.getElementById("btnReload").addEventListener("click", () => reload());
-    window.__initialized = true;
+    document.getElementById("btnFormat").addEventListener("click", () => formatCode());
+
 
 });

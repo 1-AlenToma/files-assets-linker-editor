@@ -10,6 +10,7 @@ style-src ${webview.cspSource} 'unsafe-inline';
 script-src 'nonce-${nonce}' 'unsafe-eval' https:;
 worker-src blob:;
 font-src ${webview.cspSource} data:;
+connect-src ${webview.cspSource} https:;
 ">
     <script nonce="${nonce}">
         window.appSettings = "{{appSettings}}";
@@ -47,17 +48,32 @@ font-src ${webview.cspSource} data:;
             <a class="close">x</a>
         </div>
         <div>
-          data
+            data
         </div>
-       
+
     </div>
     <header>
-        <p>Files-Assets-Linker-Editor</p>
+        <a href="https://github.com/1-AlenToma/files-assets-linker-editor">Files-Assets-Linker-Editor</a>
         <div>
-            <button id="btnBuild">Build</button>
-            <button id="btnSave">Save</button>
-            <button id="btnSaveAll">Save All</button>
-            <button id="btnReload">Reload</button>
+            <div>
+                <button id="btnSaveAll">Save All</button>
+            </div>
+            <div>
+                <button id="btnBuild">Build</button>
+                <span>Shift + Alt + B</span>
+            </div>
+            <div>
+                <button id="btnSave">Save</button>
+                <span>Ctrl + S</span>
+            </div>
+            <div>
+                <button id="btnFormat">Format</button>
+                <span>Shift + Alt + F</span>
+            </div>
+            <div>
+                <button id="btnReload">Reload</button>
+                <span>Shift + Alt + R</span>
+            </div>
         </div>
     </header>
     <div class="main">
