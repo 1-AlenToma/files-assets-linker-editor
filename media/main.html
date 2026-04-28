@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="
+default-src 'none';
+img-src ${webview.cspSource} https: data:;
+style-src ${webview.cspSource} 'unsafe-inline';
+script-src 'nonce-${nonce}' 'unsafe-eval' https:;
+worker-src blob:;
+font-src ${webview.cspSource} data:;
+">
+    <script nonce="${nonce}">
+        window.appSettings = "{{appSettings}}";
+        function applyTheme(themeKind) {
+            const root = document.documentElement;
+
+            const isDark = themeKind !== 1; // VS Code: 1 = light
+
+            if (isDark) {
+                root.style.setProperty("--primary-text-color", "#fff");
+                root.style.setProperty("--secondary-text-color", "#222");
+                root.style.setProperty("--primary-bg-color", "#1e1e1e");
+                root.style.setProperty("--secondary-bg-color", "#252526");
+                root.style.setProperty("--tertiary-bg-color", "#333");
+            } else {
+                root.style.setProperty("--primary-text-color", "#222");
+                root.style.setProperty("--secondary-text-color", "#fff");
+                root.style.setProperty("--primary-bg-color", "#ffffff");
+                root.style.setProperty("--secondary-bg-color", "#f3f3f3");
+                root.style.setProperty("--tertiary-bg-color", "#ddd");
+            }
+        }
+        applyTheme(window.appSettings.themeKind);
+    </script>
+    <link rel="stylesheet" href="{{style.css}}">
+    <link rel="stylesheet" href="{{monacoCss}}">
+
+</head>
+
+<body>
+    <div class="blur"></div>
+    <div class="dialog alert-d">
+        <div>
+            <p>test</p>
+            <a class="close">x</a>
+        </div>
+        <div>
+          data
+        </div>
+       
+    </div>
+    <header>
+        <p>Files-Assets-Linker-Editor</p>
+        <div>
+            <button id="btnBuild">Build</button>
+            <button id="btnSave">Save</button>
+            <button id="btnSaveAll">Save All</button>
+            <button id="btnReload">Reload</button>
+        </div>
+    </header>
+    <div class="main">
+        <div id="sidebar">
+            <h3>Assets</h3>
+            <div id="list"></div>
+        </div>
+
+        <div class="tabs" id="tabs">
+            <div class="tab-bar" id="tabBar"></div>
+            <div class="tab-panels" id="tabPanels">
+            </div>
+        </div>
+    </div>
+
+    <script nonce="${nonce}" src="{{vs/loader.js}}"></script>
+    <script nonce="${nonce}" src="{{main.js}}"></script>
+</body>
+
+</html>

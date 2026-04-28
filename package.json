@@ -1,0 +1,45 @@
+{
+  "name": "files-assets-linker-editor",
+  "displayName": "Assets Linker (Monaco UI)",
+  "description": "JSON-driven asset linker with Monaco editor and live preview",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "activationEvents": [
+    "onStartupFinished",
+    "onCommand:assetLinker.openEditor",
+    "onCommand:assetLinker.build"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "assetLinker.openEditor",
+        "title": "Assets Linker: Open Editor"
+      },
+      {
+        "command": "assetLinker.build",
+        "title": "Assets Linker: Build"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "assetLinker.openEditor",
+          "when": "resourceFilename == file-assets-linker.json"
+        }
+      ]
+    }
+  },
+  "devDependencies": {
+    "vite": "^8.0.10"
+  },
+  "dependencies": {
+    "esbuild": "^0.28.0",
+    "html-minifier-terser": "^7.2.0",
+    "js-beautify": "^1.15.4",
+    "lightningcss": "^1.32.0",
+    "monaco-editor": "^0.55.1"
+  }
+}
