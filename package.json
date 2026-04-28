@@ -4,9 +4,27 @@
   "description": "Link external HTML, CSS, JS assets into your project",
   "publisher": "AlenToma",
   "version": "0.0.1",
+  "repository": "https://github.com/1-AlenToma/files-assets-linker-editor",
   "engines": {
     "vscode": "^1.80.0"
   },
+  "keywords": [
+    "webview",
+    "assets",
+    "linker",
+    "bundler",
+    "html",
+    "css",
+    "javascript",
+    "react-native",
+    "monaco",
+    "editor",
+    "file-sync",
+    "live-assets",
+    "ui-tooling",
+    "frontend",
+    "development-tools"
+  ],
   "activationEvents": [
     "onStartupFinished",
     "onCommand:assetLinker.openEditor",
