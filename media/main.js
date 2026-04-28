@@ -263,6 +263,10 @@ async function getEditor(id, lang) {
             editor.trigger("keyboard", "type", { text });
         });
 
+        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyX, () => {
+            editor.trigger('keyboard', 'editor.action.clipboardCutAction');
+        });
+
         editor.onDidChangeModelContent((event) => {
             log("data changes", id)
             tabs[id]?.hasChange();
