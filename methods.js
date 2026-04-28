@@ -19,6 +19,13 @@ function join(...args) {
     return path.join(...paths);
 }
 
+function ensureDir(filePath) {
+    const dir = path.dirname(filePath);
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+    }
+}
+
 function beautify(type, content, options = {}) {
     const defaultOptions = {
         indent_size: 2,
@@ -158,7 +165,7 @@ async function build(root, config) {
                 * File created by files-assets-linker-editor 
                 * config: ${join(root, 'file-assets-linker.json')}
                 */`.replace(/^\s+/gm, '');
-                data += `\nconst data = ${JSON.stringify(item, undefined, 2)};`;
+                data += `\nconst data = ${JSON.stringify(item)};`;
                 if (format != "commonjs")
                     data += "\nexport default data;";
                 else data += "\nmodule.exports = data;";
@@ -168,6 +175,7 @@ async function build(root, config) {
                     else data += `\nmodule.exports.${k}= data.${k}.content;`
                 }
                 console.log("writing to", outputPath);
+                ensureDir(outputPath);
                 fs.writeFileSync(outputPath, data, 'utf8');
             }
         }
