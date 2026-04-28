@@ -4,6 +4,7 @@ const { transform } = require("lightningcss");
 const fs = require('fs');
 const path = require('path');
 const beautifyLib = require("js-beautify");
+const vscode = require('vscode');
 
 function join(...args) {
     let paths = [];
@@ -135,22 +136,25 @@ async function build(root, config) {
         for (let c of config) {
             for (const asset of c.assets || []) {
                 const fullPath = join(root, asset.path);
-                let output = asset.output ?? c.output;
-                const format = (asset.output ? (asset.format ?? c.format ?? "esm") : c.format ?? "esm").toLowerCase();
-                let content = '';
                 try {
-                    content = fs.readFileSync(fullPath, 'utf8');
-                } catch (e) { console.warn("Failed to read:", fullPath, e.message); }
+                    let output = asset.output ?? c.output;
+                    const format = (asset.output ? (asset.format ?? c.format ?? "esm") : c.format ?? "esm").toLowerCase();
+                    let content = '';
+                    try {
+                        content = fs.readFileSync(fullPath, 'utf8');
+                    } catch (e) { console.warn("Failed to read:", fullPath, e.message); }
 
-                let type = asset.type ?? path.parse(fullPath).ext.slice(1);
-                let name = asset.name ?? path.parse(fullPath).name.replace(/[^a-zA-Z0-9]/g, "");
-                content = await minify(type, content);
-                if (!files[output])
-                    files[output] = { format }
-                files[output][name] = {
-                    content
+                    let type = asset.type ?? path.parse(fullPath).ext.slice(1);
+                    let name = asset.name ?? path.parse(fullPath).name.replace(/[^a-zA-Z0-9]/g, "");
+                    content = await minify(type, content);
+                    if (!files[output])
+                        files[output] = { format }
+                    files[output][name] = {
+                        content
+                    }
+                } catch (e) {
+                    throw `Error on asset:${e.toString()} for file:${fullPath}`;
                 }
-
             }
 
 
@@ -180,7 +184,11 @@ async function build(root, config) {
             }
         }
     } catch (e) {
-        console.error("build Error", e)
+        console.error("build Error", e);
+        const msg = e.toString();
+
+        vscode.window.showInformationMessage((!msg.startsWith("Error") ? 'Error on Build:' : "") + e.toString());
+        throw e;
     }
 }
 

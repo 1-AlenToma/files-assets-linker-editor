@@ -3,7 +3,7 @@
   "displayName": "Assets Linker (Monaco UI)",
   "description": "Link external HTML, CSS, JS assets into your project",
   "publisher": "AlenToma",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "repository": "https://github.com/1-AlenToma/files-assets-linker-editor",
   "engines": {
     "vscode": "^1.80.0"
