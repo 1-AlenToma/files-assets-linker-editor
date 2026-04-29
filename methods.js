@@ -139,6 +139,7 @@ async function build(root, config) {
                 try {
                     let output = asset.output ?? c.output;
                     const format = (asset.output ? (asset.format ?? c.format ?? "esm") : c.format ?? "esm").toLowerCase();
+                    const minifyCode = asset.minify != undefined ? asset.minify : c.minify ?? true;
                     let content = '';
                     try {
                         content = fs.readFileSync(fullPath, 'utf8');
@@ -146,9 +147,9 @@ async function build(root, config) {
 
                     let type = asset.type ?? path.parse(fullPath).ext.slice(1);
                     let name = asset.name ?? path.parse(fullPath).name.replace(/[^a-zA-Z0-9]/g, "");
-                    content = await minify(type, content);
+                    content = minifyCode ? await minify(type, content) : content;
                     if (!files[output])
-                        files[output] = { format }
+                        files[output] = { ___format: format, ___indent: c.indent }
                     files[output][name] = {
                         content
                     }
@@ -159,24 +160,67 @@ async function build(root, config) {
 
 
 
+
+
             for (let p in files) {
                 let item = files[p];
-                let format = item.format;
-                delete item.format;
+                let format = item.___format;
+                let minifyCode = item.___minifyCode;
+                let indent = item.___indent;
                 const outputPath = join(root, p);
+                const isTs = outputPath.endsWith("ts");
+                delete item.___format;
+                delete item.___minifyCode;
+                delete item.___indent;
+
                 let data = `
                 /** 
                 * File created by files-assets-linker-editor 
                 * config: ${join(root, 'file-assets-linker.json')}
                 */`.replace(/^\s+/gm, '');
-                data += `\nconst data = ${JSON.stringify(item)};`;
+                let jsGetter = "";
+                let _any = format != "commonjs" ? "as any" : ""
+                if (format != "commonjs" && isTs) {
+                    data += `\ntype IGetter = (fileKey: ${Object.keys(item).map(x => `"${x}"`).join("|")}`;
+                    data += ', ...keyValues: (`${string}:${string}` | `"${string}:${string}"`)[]) => string';
+                }
+
+                jsGetter += `function get(fileKey, ...keyValues) {
+                    let item = data[fileKey];
+                    if (typeof item == "object")
+                        item = item.content;
+                    if (!item)
+                        return item;
+                    for(let keyValue of keyValues){
+                        let literal = "";
+                        if (keyValue.startsWith("'") || keyValue.startsWith('"'))
+                        {
+                            literal= keyValue[0];
+                            keyValue= keyValue.slice(1, keyValue.length -1);
+                        }
+                        const index = keyValue.indexOf(":");
+                        const key = index === -1 ? keyValue : keyValue.slice(0, index);
+                        const value = index === -1 ? "" : keyValue.slice(index + 1);
+                        let part = literal ? \`['"]\`: "";
+                        let reg = new RegExp(part +"\\\\$\\\\{\\\\{(" + key + ")\\\\}\\\\}"+ part, "gim")
+                        item = item.replace(reg, value);
+                    }
+                    return item;
+                }`;
+                item.get = "##JSGetterFunction";
+                jsGetter = await minify("js", jsGetter);
+                if (format != "commonjs" && isTs)
+                    jsGetter = jsGetter.trimEnd() + " as any as IGetter"
+                data += `\nconst data = ${JSON.stringify(item, undefined, indent)};`;
+                data = data.replace(`"##JSGetterFunction"`, jsGetter)
                 if (format != "commonjs")
                     data += "\nexport default data;";
                 else data += "\nmodule.exports = data;";
                 for (let k in item) {
+                    let subKey = typeof item[k] == "object" && item[k]?.content ? ".content" : "";
                     if (format != "commonjs")
-                        data += `\nexport const ${k} = data.${k}.content;`;
-                    else data += `\nmodule.exports.${k}= data.${k}.content;`
+                        data += `\nexport const ${k} = data.${k}${subKey};`;
+                    else data += `\nmodule.exports.${k}= data.${k}${subKey};`
                 }
                 console.log("writing to", outputPath);
                 ensureDir(outputPath);

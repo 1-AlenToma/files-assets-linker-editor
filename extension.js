@@ -86,12 +86,15 @@ function openEditor(context, configFileUrl) {
   if (!selectedConfigRoot) return;
 
   let config = { output: 'file-assets-linker-index.ts', assets: [] };
-  try {
-    config = getAssets(selectedConfigRoot)
-    console.log("config loaded", config)
-  } catch (e) { console.error("could not read config") }
 
 
+  const loadConfig = () => {
+    try {
+      config = getAssets(selectedConfigRoot)
+      console.log("config loaded", config)
+    } catch (e) { console.error("could not read config") }
+  }
+  loadConfig();
   //panel.webview.postMessage({ type: 'init', config });
 
   panel.webview.onDidReceiveMessage(async (msg) => {
@@ -105,18 +108,20 @@ function openEditor(context, configFileUrl) {
 
     if (msg.type == "warn") {
       console.warn(msg.data);
-      vscode.window.showInformationMessage('warn found');
+      vscode.window.showInformationMessage(`warn:${JSON.stringify(msg.data)}`);
       return;
     }
 
     if (msg.type == "error") {
       console.error(msg.data);
-      vscode.window.showInformationMessage('Error found');
+      vscode.window.showInformationMessage(`error:${JSON.stringify(msg.data)}`);
       return;
     }
 
 
     if (msg.type == "config") {
+      loadConfig();
+      vscode.window.showInformationMessage(`config loaded`);
       panel.webview.postMessage({ type: 'init', config: config });
     }
 

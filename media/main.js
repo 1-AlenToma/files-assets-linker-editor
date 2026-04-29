@@ -317,7 +317,7 @@ window.addEventListener('message', event => {
     if (msg.type === "reload") {
         console.log("Reloading due to:", msg.file);
         // simplest approach:
-        location.reload();
+        // location.reload();
     }
 
     if (msg.type === 'fileContent') {

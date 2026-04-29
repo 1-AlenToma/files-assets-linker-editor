@@ -78,6 +78,19 @@ Path to the generated file.
 "output": "./assets/test.ts"
 ```
 
+## `minify`
+
+``` json
+
+"minify": false // default:true
+```
+
+## `json indent`
+
+``` json
+"output": 4 // default 0
+```
+
 ------------------------------------------------------------------------
 
 ### `format`
@@ -182,4 +195,17 @@ Assets can override their parent group settings:
 export default data;
 export const indexHtml = data.indexHtml.content;
 export const webStyle = data.webStyle.content;
+export const get = data.get;
+```
+
+## `get`
+
+incase you want to pass/replace data in the js, css ot html, you could use get method
+
+```js
+// in the js file add somthing like ${{firstName}} "${{lastName}}"
+
+let html = get("indexHtml", "firstName:Alen", '"lastName:Toma"');
+// now the result will be Alen Toma
+
 ```
