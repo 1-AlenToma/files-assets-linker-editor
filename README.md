@@ -91,6 +91,36 @@ Path to the generated file.
 "output": 4 // default 0
 ```
 
+## `keys`
+
+each assets group could containes `keys`. those `keys` could be refer to in `js, html and css` 
+
+### example
+
+```js
+{
+  "output": "./assets/test.ts",
+  "keys":{
+    "settings",
+    "data",
+    "test",
+    "item":{
+        "name": ""
+    }
+  }    
+
+ // in css you could use var(--AssetsLinkEditor-keys-settings)
+ // in js you could use AssetsLinkEditor.keys.settings
+  // in html you could use var(--AssetsLinkEditor-keys-settings) in style tags or AssetsLinkEditor.keys.settings in script tags and --AssetsLinkEditor-keys-settings in html tags
+// get method below could handle assigning data to those keys.
+// when you open editor, you could edit those keys there.
+}
+```
+
+## `globalVar`
+
+for `keys` object we use `AssetsLinkEditor` as above. You could change it by assigning this value
+
 ------------------------------------------------------------------------
 
 ### `format`
@@ -200,12 +230,13 @@ export const get = data.get;
 
 ## `get`
 
-incase you want to pass/replace data in the js, css ot html, you could use get method
+incase you want to pass/replace data in the js, css ot html, you could use `get` method
 
+if you look above at section prop `keys`.
 ```js
-// in the js file add somthing like ${{firstName}} "${{lastName}}"
+// so if we have --AssetsLinkEditor-keys-settings somewhere 
 
-let html = get("indexHtml", "firstName:Alen", '"lastName:Toma"');
-// now the result will be Alen Toma
+let html = get("indexHtml", "settings:data",...);
+// now the result will be data
 
 ```

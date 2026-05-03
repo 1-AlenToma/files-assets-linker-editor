@@ -56,9 +56,9 @@
   },
   "dependencies": {
     "esbuild": "^0.28.0",
+    "express": "^5.2.1",
     "html-minifier-terser": "^7.2.0",
     "js-beautify": "^1.15.4",
-    "lightningcss": "^1.32.0",
-    "monaco-editor": "^0.55.1"
+    "lightningcss": "^1.32.0"
   }
 }

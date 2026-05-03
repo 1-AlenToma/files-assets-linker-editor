@@ -3,17 +3,11 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="Content-Security-Policy" content="
-default-src 'none';
-img-src ${webview.cspSource} https: data:;
-style-src ${webview.cspSource} 'unsafe-inline';
-script-src 'nonce-${nonce}' 'unsafe-eval' https:;
-worker-src blob:;
-font-src ${webview.cspSource} data:;
-connect-src ${webview.cspSource} https:;
-">
-    <script nonce="${nonce}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {{meta}}
+    <script nonce="{{nonce}}">
         window.appSettings = "{{appSettings}}";
+
         function applyTheme(themeKind) {
             const root = document.documentElement;
 
@@ -34,10 +28,18 @@ connect-src ${webview.cspSource} https:;
             }
         }
         applyTheme(window.appSettings.themeKind);
-    </script>
-    <link rel="stylesheet" href="{{style.css}}">
-    <link rel="stylesheet" href="{{monacoCss}}">
 
+        window.require = {
+            paths: {
+                vs: window.appSettings.monacoPath
+            }
+        };
+
+    </script>
+
+
+    <link rel="stylesheet" href="{{editor/editor.main.css}}" />
+    <link rel="stylesheet" href="{{..app_styles.css}}" />
 </head>
 
 <body>
@@ -59,6 +61,11 @@ connect-src ${webview.cspSource} https:;
                 <button id="btnSaveAll">Save All</button>
             </div>
             <div>
+                <label>useOnlineEditor</label>
+                <input type="checkbox" id="chkUseOnlineEditor" />
+
+            </div>
+            <div>
                 <button id="btnBuild">Build</button>
                 <span>Shift + Alt + B</span>
             </div>
@@ -68,7 +75,7 @@ connect-src ${webview.cspSource} https:;
             </div>
             <div>
                 <button id="btnFormat">Format</button>
-                <span>Shift + Alt + F</span>
+                <span>Ctrl + Alt + F</span>
             </div>
             <div>
                 <button id="btnReload">Reload</button>
@@ -76,7 +83,7 @@ connect-src ${webview.cspSource} https:;
             </div>
         </div>
     </header>
-    <div class="main">
+    <div class="mainItem">
         <div id="sidebar">
             <h3>Assets</h3>
             <div id="list"></div>
@@ -88,9 +95,9 @@ connect-src ${webview.cspSource} https:;
             </div>
         </div>
     </div>
+    <script nonce="{{nonce}}" src="{{loader.js}}"></script>
+    <script nonce="{{nonce}}" src="{{..app_js.js}}"></script>
 
-    <script nonce="${nonce}" src="{{vs/loader.js}}"></script>
-    <script nonce="${nonce}" src="{{main.js}}"></script>
 </body>
 
 </html>

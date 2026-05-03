@@ -1,0 +1,6 @@
+{
+  "base": "d:\\Projects\\files-assets-linker-editor",
+  "databasePath": "d:\\Projects\\files-assets-linker-editor\\media\\database.json",
+  "useOnlineEditor": true,
+  "port": 63224
+}
